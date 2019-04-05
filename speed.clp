@@ -9,10 +9,15 @@
     )
 )
 
+;; Начальные факты
+(deffacts init-facts
+  (speed-value 100)
+)
+
 ;; Функция fuzzify
-;;      Параметры: ?fztemplate - имя fuzzy шаблона
+;;      Параметры: ?fztemplate - имя fuzzy шаблона (speed)
 ;;                 ?value - целое число для фаззификации
-;;                 ?delta - точность числа
+;;                 ?delta - допустимая погрешность четкого числа
 ;;
 ;; Функция создает нечёткий факт по переданному шаблону. Нечёткое множество представлено
 ;; треугольной функцией принадлежности c максимумом в точке value и нулём в точках value+delta и value-delta.
@@ -35,18 +40,18 @@
     )
 )
 
-;; Правило, выводящее график термов и их функции принадлежности
-(defrule show_plot 
+;; Правило, выводящее график термов.
+(defrule show-plot-rule 
     (speed ?)
     =>
     (printout t "showing plot..." crlf)
     (plot-fuzzy-value t -*+ nil nil (create-fuzzy-value speed low) (create-fuzzy-value speed medium) (create-fuzzy-value speed high))
 )
 
-;; Правило, добавляющее тестовое значение при отсутствии факта speed 
-(defrule add_test_value
-    (not (speed ?))
+;; Правило, добавляющее тестовое значение при наличии факта speed-value 
+(defrule fuzzy-value-rule
+    (speed-value ?value)
     =>
-    (printout t "adding test value (speed 100 0.001)..." crlf)
-    (fuzzify speed 100 0.001)
+    (printout t "adding test value (speed " ?value " 0.001)..." crlf)
+    (fuzzify speed ?value 0.001)
 )
