@@ -40,18 +40,18 @@
     )
 )
 
-;; Правило, выводящее график термов.
-(defrule show-plot-rule 
-    (speed ?)
-    =>
-    (printout t "showing plot..." crlf)
-    (plot-fuzzy-value t -*+ nil nil (create-fuzzy-value speed low) (create-fuzzy-value speed medium) (create-fuzzy-value speed high))
-)
-
-;; Правило, добавляющее тестовое значение при наличии факта speed-value 
+;; Правило, добавляющее тестовое значение при наличии факта speed-value.
+;; Также выводит график термов и нечеткого числа speed.
 (defrule fuzzy-value-rule
     (speed-value ?value)
     =>
     (printout t "adding test value (speed " ?value " 0.001)..." crlf)
-    (fuzzify speed ?value 0.001)
+    (bind ?speed-address (fuzzify speed ?value 0.001))
+    (printout t "showing plot..." crlf)
+    (plot-fuzzy-value t -*+S nil nil 
+        (create-fuzzy-value speed low) 
+        (create-fuzzy-value speed medium) 
+        (create-fuzzy-value speed high) 
+        ?speed-address
+    )
 )
